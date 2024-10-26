@@ -10,6 +10,7 @@ repositories {
 
 dependencies {
     implementation("ch.qos.logback:logback-classic:${Versions.logback}")
+    implementation("io.github.cdimascio:dotenv-kotlin:${Versions.dotenv}")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${Versions.ktor}")
     implementation("io.ktor:ktor-server-core:${Versions.ktor}")
     implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
