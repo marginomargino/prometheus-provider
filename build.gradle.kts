@@ -1,7 +1,8 @@
 plugins {
     application
     kotlin("jvm") version "2.0.21"
-    id("io.ktor.plugin") version "3.0.0"
+    kotlin("plugin.serialization") version "1.9.25"
+    id("io.ktor.plugin") version Versions.ktor
 }
 
 repositories {
@@ -15,6 +16,9 @@ dependencies {
     implementation("io.ktor:ktor-server-core:${Versions.ktor}")
     implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
     implementation("io.ktor:ktor-server-content-negotiation:${Versions.ktor}")
+    implementation("io.prometheus:prometheus-metrics-core:${Versions.prometheus}")
+    implementation("io.prometheus:prometheus-metrics-instrumentation-jvm:${Versions.prometheus}")
+    implementation("io.prometheus:prometheus-metrics-exporter-httpserver:${Versions.prometheus}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinx_serialization}")
 
 }
