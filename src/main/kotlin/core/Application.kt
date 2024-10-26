@@ -20,7 +20,6 @@ import io.prometheus.metrics.expositionformats.PrometheusTextFormatWriter
 import io.prometheus.metrics.model.registry.PrometheusRegistry
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
-import java.util.zip.GZIPOutputStream
 
 fun main() {
 
@@ -65,28 +64,16 @@ fun main() {
                 val writer = PrometheusTextFormatWriter(false)
                 val snapshots = PrometheusRegistry.defaultRegistry.scrape()
 
-                val acceptEncoding = call.request.headers["Accept-Encoding"] ?: ""
-
-                val output = when {
-                    acceptEncoding.contains("gzip", ignoreCase = true) ->
-                        ByteArrayOutputStream().use { byteStream ->
-                            GZIPOutputStream(byteStream).use { gzipStream ->
-                                writer.write(gzipStream, snapshots)
-                            }
-                            byteStream.toByteArray()
-                        }
-
-                    else -> ByteArrayOutputStream().use { byteStream ->
-                        writer.write(byteStream, snapshots)
-                        byteStream.toByteArray()
-                    }
+                val output = ByteArrayOutputStream().use { byteStream ->
+                    writer.write(byteStream, snapshots)
+                    byteStream.toString(Charsets.UTF_8)
                 }
 
                 call.respond(object : OutgoingContent.WriteChannelContent() {
                     override val contentType: ContentType = ContentType.Text.Plain.withCharset(Charsets.UTF_8)
 
                     override suspend fun writeTo(channel: ByteWriteChannel) {
-                        channel.writeFully(ByteBuffer.wrap(output))
+                        channel.writeFully(ByteBuffer.wrap(output.toByteArray()))
                     }
                 })
             }
